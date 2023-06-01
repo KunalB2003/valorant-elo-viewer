@@ -1,0 +1,131 @@
+Listening on http://localhost:3000
+==============================================
+Running on localhost:3000
+Running track loop every 15 minutes
+==============================================
+{
+  '364278': {
+    date: 364278,
+    length: 3032,
+    mode: 'Competitive',
+    matchid: '69e37d2a-bf95-4ebe-a032-9e3c95e832ce'
+  },
+  '379010': {
+    date: 379010,
+    length: 2939,
+    mode: 'Competitive',
+    matchid: '3727c93a-28a7-4d59-9dcc-139883a0a603'
+  },
+  '396675': {
+    date: 396675,
+    length: 1363,
+    mode: 'Competitive',
+    matchid: '93025c04-da57-475f-b734-44795ad5db86'
+  },
+  '399159': {
+    date: 399159,
+    length: 1565,
+    mode: 'Competitive',
+    matchid: '1a5e012e-c1cb-43dd-ad6e-83a003e7dec2'
+  },
+  '407168': {
+    date: 407168,
+    length: 2295,
+    mode: 'Competitive',
+    matchid: '198a877f-4902-475d-9d6c-cc82ee6df67b'
+  },
+  '463461': {
+    date: 463461,
+    length: 2310,
+    mode: 'Competitive',
+    matchid: 'f6b91189-bdff-43df-bd34-dbfb995eecc1'
+  },
+  '582921': {
+    date: 582921,
+    length: 521,
+    mode: 'Escalation',
+    matchid: 'cdcaf6e1-0f6f-4f47-8159-b73a90066bf9'
+  },
+  '583733': {
+    date: 583733,
+    length: 458,
+    mode: 'Escalation',
+    matchid: '30912a21-4428-4935-bfae-94936b738955'
+  },
+  '584280': {
+    date: 584280,
+    length: 593,
+    mode: 'Escalation',
+    matchid: '0565ed16-5ddd-4847-8c92-2105190e2986'
+  },
+  '585601': {
+    date: 585601,
+    length: 534,
+    mode: 'Escalation',
+    matchid: 'a8d1d1b9-854c-47f6-a80f-0230f5baf3a2'
+  },
+  '586261': {
+    date: 586261,
+    length: 2847,
+    mode: 'Competitive',
+    matchid: '24b0de35-1257-47ea-a92c-0e8ded72b8fe'
+  }
+}
+{
+  '364278': {
+    date: 364278,
+    length: 3032,
+    mode: 'Competitive',
+    matchid: '69e37d2a-bf95-4ebe-a032-9e3c95e832ce',
+    elo: 1477,
+    change: 24
+  },
+  '379010': {
+    date: 379010,
+    length: 2939,
+    mode: 'Competitive',
+    matchid: '3727c93a-28a7-4d59-9dcc-139883a0a603',
+    elo: 1490,
+    change: 13
+  },
+  '396675': {
+    date: 396675,
+    length: 1363,
+    mode: 'Competitive',
+    matchid: '93025c04-da57-475f-b734-44795ad5db86',
+    elo: 1510,
+    change: 20
+  },
+  '399159': {
+    date: 399159,
+    length: 1565,
+    mode: 'Competitive',
+    matchid: '1a5e012e-c1cb-43dd-ad6e-83a003e7dec2',
+    elo: 1536,
+    change: 26
+  },
+  '407168': {
+    date: 407168,
+    length: 2295,
+    mode: 'Competitive',
+    matchid: '198a877f-4902-475d-9d6c-cc82ee6df67b',
+    elo: 1514,
+    change: -22
+  },
+  '463461': {
+    date: 463461,
+    length: 2310,
+    mode: 'Competitive',
+    matchid: 'f6b91189-bdff-43df-bd34-dbfb995eecc1',
+    elo: 1533,
+    change: 19
+  },
+  '586261': {
+    date: 586261,
+    length: 2847,
+    mode: 'Competitive',
+    matchid: '24b0de35-1257-47ea-a92c-0e8ded72b8fe',
+    elo: 1512,
+    change: -21
+  }
+}
