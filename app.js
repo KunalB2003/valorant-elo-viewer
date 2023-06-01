@@ -4,9 +4,9 @@ const app = express();
 const fs = require('fs');
 
 
-const PORT = 3000;
+const PORT = 3001;
 
-app.use(bodyParser.json())
+app.use(bodyParser.json)
 app.use(bodyParser.urlencoded({ extended: true }))
 
 
@@ -24,6 +24,7 @@ app.listen(`${PORT}`, async () => {
 });
 
 app.get('/', (req, res) => {
+    console.log("!");
     res.send('yeah');
 });
 
@@ -65,7 +66,9 @@ notes:
 */
 async function updateTrackedPlayers(playerList) {
     createFolder("data/players");
+    console.log("update called");
     for (const player of playerList) {
+        console.log("update loop called");
         consoleWrite('UPDATE', `Starting update for ${player.username}#${player.tag}`);
         const { username, tag, region } = player;
         createFolder(`data/players/${username}-${tag}`)
@@ -126,6 +129,7 @@ async function updateTrackedPlayers(playerList) {
                 }
             } else {
                 // look up the matchid to fill in the missing information
+                console.log(match.match_id);
                 let tempRes = await fetch(`https://api.henrikdev.xyz/valorant/v2/match/${match.match_id}`);
                 if (res.status != 200) {
                     consoleWrite('ERROR', res.statusText);
