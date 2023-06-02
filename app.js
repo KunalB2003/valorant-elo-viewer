@@ -40,20 +40,31 @@ app.post('/trackPlayer', (req, res) => {
     }
     username = username.toLowerCase();
     tag = tag.toLowerCase();
-    let trackList = getTrackList();
-    // check if the player is already being tracked
-    for (const player of trackList) {
-        if (JSON.stringify(player) === JSON.stringify({username, tag, region})) {
-            consoleWrite('ERROR', "Player is already being tracked");
-            res.status(400).send("Player is already being tracked");
-            return;
-        }
-    }
 
-    trackList.push({username, tag, region});
-    fs.writeFile("data/track_list.json", JSON.stringify(trackList), (err) => {if (err) consoleWrite('ERROR', err)});
-    consoleWrite('UPDATE', `Added ${username}#${tag} to track list`);
-    res.status(200).send("Added player to track list");
+    // check to see if player exists
+    fetch(`https://api.henrikdev.xyz/valorant/v1/account/${username}/${tag}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.status !== 200) {
+                consoleWrite('ERROR', data.message);
+                res.status(data.status).send(data.message);
+                return;
+            }
+            // check if the player is already being tracked
+            let trackList = getTrackList();
+            for (const player of trackList) {
+                if (JSON.stringify(player) === JSON.stringify({username, tag, region})) {
+                    consoleWrite('ERROR', "Player is already being tracked");
+                    res.status(400).send("Player is already being tracked");
+                    return;
+                }
+            }
+            
+            trackList.push({username, tag, region});
+            fs.writeFile("data/track_list.json", JSON.stringify(trackList), (err) => {if (err) consoleWrite('ERROR', err)});
+            consoleWrite('UPDATE', `Added ${username}#${tag} to track list`);
+            res.status(200).send("Added player to track list");
+        })
 })
 
 
