@@ -52,9 +52,7 @@ app.get('/data/:region/:username/:id', (req, res) => {
                     data.matches = matches;
                     res.status(data.status).send(data);
                 });
-
         });
-
 })
 
 // post requests
@@ -91,8 +89,8 @@ app.post('/trackPlayer', (req, res) => {
                     return;
                 }
             }
-            
-            trackList.push({username, tag, region});
+            console.log(data.data.puuid)
+            trackList.push({username, tag, region, puuid: data.data.puuid });
             fs.writeFile("data/track_list.json", JSON.stringify(trackList), (err) => {if (err) consoleWrite('ERROR', err)});
             consoleWrite('UPDATE', `Added ${username}#${tag} to track list`);
             res.status(200).send("Added player to track list");
