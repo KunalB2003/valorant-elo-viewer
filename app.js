@@ -1,17 +1,16 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const app = express();
 const fs = require('fs');
+const app = express();
 
 
-const PORT = 3001;
+const PORT = 3000;
 
-app.use(bodyParser.json)
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
 
 
-app.listen(`${PORT}`, async () => {
+app.listen(PORT, async () => {
     console.log("\x1b[33m==============================================");
     console.log(`Running on http://localhost:${PORT}`);
     console.log("Running track loop every 15 minutes");
@@ -19,14 +18,46 @@ app.listen(`${PORT}`, async () => {
     while (true) {
         let trackedUsers = getTrackList();
         updateTrackedPlayers(trackedUsers);
-        await delay(1000 * 60 * 15);
+        await delay(1000 * 60 * 15);   
     }
 });
+
+// get requests
 
 app.get('/', (req, res) => {
     console.log("!");
     res.send('yeah');
 });
+
+
+app.get('/data/:region/:username/:id', (req, res) => {
+    let { region, username, id } = req.params;
+    if (!region || !username || !id) {
+        res.status(400).send("Missing region, username, or id");
+        return;
+    }
+
+    consoleWrite('DATA', `Requested [${region}] ${username}#${id}`);
+
+
+    username = username.toLowerCase();
+    id = id.toLowerCase();
+    region = region.toLowerCase();
+    fetch(`https://api.henrikdev.xyz/valorant/v1/account/${username}/${id}`)
+        .then(res => res.json())
+        .then(data => {
+            fetch(`https://api.henrikdev.xyz/valorant/v1/mmr-history/${region}/${username}/${id}`)
+                .then(res => res.json())
+                .then(matches => {
+                    data.matches = matches;
+                    res.status(data.status).send(data);
+                });
+
+        });
+
+})
+
+// post requests
 
 
 // could also check to see if the player exists first
@@ -70,9 +101,6 @@ app.post('/trackPlayer', (req, res) => {
 
 
 /*
-notes: 
-- i did async/await here instead of promise chaining because i want matches from everything first and then updating everything before looking at ranked matches
-   this way, i am more likely to have data for ranked matches and wont have to do extra api calls if i did all matches and ranked matches in parallel.
 - player info is stored as json in 2 files, 1 for ranked and 1 for everything
 */
 async function updateTrackedPlayers(playerList) {
@@ -286,3 +314,5 @@ function consoleWrite(code, message) {
     }
     console.log(`\x1b[37m${new Date().toLocaleString('en-US', {timeZone: "EST"})} | ${color}[${code}] ${message}\x1b[37m`)
 }
+
+// }
