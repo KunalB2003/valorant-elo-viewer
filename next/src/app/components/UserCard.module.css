@@ -1,0 +1,15 @@
+.pfp__small {
+    width: 5rem;
+}
+
+.region-flag {
+    width: 1.5rem;
+    position: absolute;
+    border-width: .125rem;
+    /* left: 3rem; */ /* moves to the top right instead of top left of pfp*/
+}
+
+.card {
+    display: flex;
+    flex-flow: row wrap;
+}
