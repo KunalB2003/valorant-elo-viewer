@@ -1,12 +1,16 @@
 const express = require('express');
+const cors = require('cors');
 const fs = require('fs');
+
 const app = express();
 
-
-const PORT = 3000;
+const PORT = 3001;
 
 app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+   .use(express.urlencoded({ extended: true }))
+   .use(cors({
+    origin: ["http://localhost:3000", "http://localhost:3001"]
+   }))
 
 
 
@@ -16,7 +20,9 @@ app.listen(PORT, async () => {
     console.log("Running track loop every 15 minutes");
     console.log("==============================================\x1b[0m");
     while (true) {
-        let trackedUsers = getTrackList();
+        // update tracked users
+        //  TODO: make new function to check to see if stuff has changed before trying to change it
+        let trackedUsers = await getTrackList();  
         updateTrackedPlayers(trackedUsers);
         await delay(1000 * 60 * 15);   
     }
@@ -29,6 +35,10 @@ app.get('/', (req, res) => {
     res.send('yeah');
 });
 
+app.get('/tracked', (req, res) => {
+    consoleWrite('DATA', "Recieved request for user list")
+    getTrackList().then(trackedUsers => res.json(trackedUsers));
+})
 
 app.get('/data/:region/:username/:id', (req, res) => {
     let { region, username, id } = req.params;
@@ -81,19 +91,22 @@ app.post('/trackPlayer', (req, res) => {
                 return;
             }
             // check if the player is already being tracked
-            let trackList = getTrackList();
-            for (const player of trackList) {
-                if (JSON.stringify(player) === JSON.stringify({username, tag, region})) {
-                    consoleWrite('ERROR', "Player is already being tracked");
-                    res.status(400).send("Player is already being tracked");
-                    return;
+            getTrackList().then(trackList => {
+                for (const player of trackList) {
+                    if (player.puuid === data.data.puuid) {
+                        consoleWrite('ERROR', "Player is already being tracked");
+                        res.status(400).send("Player is already being tracked");
+                        return;
+                    }
                 }
-            }
-            console.log(data.data.puuid)
-            trackList.push({username, tag, region, puuid: data.data.puuid });
-            fs.writeFile("data/track_list.json", JSON.stringify(trackList), (err) => {if (err) consoleWrite('ERROR', err)});
-            consoleWrite('UPDATE', `Added ${username}#${tag} to track list`);
-            res.status(200).send("Added player to track list");
+                let player = {username, tag, region, puuid: data.data.puuid, card: data.data.card, account_level: data.data.account_level }
+                trackList.push(player);
+                fs.writeFile("data/track_list.json", JSON.stringify(trackList), (err) => {if (err) consoleWrite('ERROR', err)});
+                consoleWrite('UPDATE', `Added ${username}#${tag} to track list`);
+                updateTrackedPlayers([player])
+                res.status(200).send("Added player to track list");
+            })
+
         })
 })
 
@@ -103,6 +116,7 @@ app.post('/trackPlayer', (req, res) => {
 */
 async function updateTrackedPlayers(playerList) {
     createFolder("data/players");
+    if (Object.keys(playerList).length == 0) return;
     for (const player of playerList) {
         consoleWrite('UPDATE', `Starting update for ${player.username}#${player.tag}`);
         const { username, tag, region } = player;
@@ -114,9 +128,11 @@ async function updateTrackedPlayers(playerList) {
         let historyRanked = {};
 
         // all history
+        await delay(1000);
         await fetchAllHistory(username, tag, region, historyAll, historyRanked);
 
         // ranked history
+        await delay(1000);
         await fetchRankedHistory(username, tag, region, historyAll, historyRanked);
 
         consoleWrite('UPDATE', `Found ${Object.keys(historyAll).length} matche(s) for ${username}#${tag} (${Object.keys(historyRanked).length} ranked))`);
@@ -180,7 +196,7 @@ async function fetchRankedHistory(username, tag, region, historyAll, historyRank
             }
             return res.json();
         })
-        .then(data => {
+        .then(async (data) => {
             if (data.status != 200) return;
             for (const match of data.data) {
                 const date = parseInt(match.date_raw);
@@ -195,6 +211,7 @@ async function fetchRankedHistory(username, tag, region, historyAll, historyRank
                     }
                 } else {
                     // look up the matchid to fill in the missing information
+                    await delay(1000);
                     fetchMatch(match.match_id)
                         .then(data => {
                             if (data.status != 200) return;
@@ -262,9 +279,10 @@ async function fetchAllHistory(username, tag, region, historyAll, historyRanked)
         })
 }
 
-function getTrackList() {
+async function getTrackList() {
     createFolder("data");
-    createFile("data/track_list.json", "");
+    createFile("data/track_list.json", "[]");
+    await delay(100);
     let trackList = JSON.parse(fs.readFileSync("data/track_list.json").toString());
     return trackList;
 }
@@ -272,7 +290,7 @@ function getTrackList() {
 function createFile(filename, data="") {
     fs.open(filename, 'r', function (err, fd) {
         if (err) {
-            fs.writeFile(filename, data, function (err) {
+            fs.writeFileSync(filename, data, function (err) {
                 if (err) {
                     console.error(err);
                 }
@@ -293,7 +311,7 @@ function createFolder(foldername) {
 
 // ========== misc functions ==========
 
-const delay = (delayInms) => {
+function delay(delayInms) {
     return new Promise(resolve => setTimeout(resolve, delayInms));
 }
 
