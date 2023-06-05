@@ -175,8 +175,8 @@ async function fetchMatch(matchid) {
             if (res.status != 200) {
                 consoleWrite('ERROR', res.statusText);
                 if (res.status == 429) {
-                    consoleWrite('ERROR', 'Rate limited, waiting 5 seconds');
-                    return delay(5000).then(() => fetchMatch(matchid));
+                    consoleWrite('ERROR', 'Rate limited, waiting 30 seconds');
+                    return delay(30000).then(() => fetchMatch(matchid));
                 }
             }
             return res.json();
