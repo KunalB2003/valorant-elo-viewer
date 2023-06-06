@@ -200,6 +200,7 @@ async function fetchRankedHistory(username, tag, region, historyAll, historyRank
                 const date = parseInt(match.date_raw);
                 const elo = parseInt(match.elo);
                 const change = parseInt(match.mmr_change_to_last_game);
+                if (currentRanked[date]) continue;
                 if (historyRanked[date]) {
                     historyRanked[date] = {
                         ...historyRanked[date],
