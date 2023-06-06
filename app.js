@@ -23,7 +23,7 @@ app.listen(PORT, async () => {
         // update tracked users
         //  TODO: make new function to check to see if stuff has changed before trying to change it
         let trackedUsers = await getTrackList();  
-        updateTrackedPlayers(trackedUsers);
+        updateTrackedPlayers(trackedUsers).then(() => consoleWrite('UPDATE', "Updated tracked players"));
         await delay(1000 * 60 * 15);   
     }
 });
@@ -162,10 +162,8 @@ async function updateTrackedPlayers(playerList) {
             fs.writeFile(`data/players/${username}-${tag}/ranked.json`, JSON.stringify(ranked), (err) => {if (err) consoleWrite('ERROR', err)});
         }
         consoleWrite('UPDATE', `Added ${newAll} new matche(s) for ${username}#${tag} (${newRanked} ranked))`);
-
-            
-
     }
+    return;
 
 }
 
@@ -175,8 +173,8 @@ async function fetchMatch(matchid) {
             if (res.status != 200) {
                 consoleWrite('ERROR', res.statusText);
                 if (res.status == 429) {
-                    consoleWrite('ERROR', 'Rate limited, waiting 30 seconds');
-                    return delay(30000).then(() => fetchMatch(matchid));
+                    consoleWrite('ERROR', 'Rate limited, waiting 1 minute (fetchmatch ' + matchid + ')' );
+                    return delay(60000).then(() => fetchMatch(matchid));
                 }
             }
             return res.json();
@@ -185,13 +183,13 @@ async function fetchMatch(matchid) {
 
 async function fetchRankedHistory(username, tag, region, historyAll, historyRanked) {
     let currentRanked = JSON.parse(fs.readFileSync(`data/players/${username}-${tag}/ranked.json`).toString());
-    fetch(`https://api.henrikdev.xyz/valorant/v1/mmr-history/${region}/${username}/${tag}`)
+    return fetch(`https://api.henrikdev.xyz/valorant/v1/mmr-history/${region}/${username}/${tag}`)
         .then(res => {
             if (res.status != 200) {
                 consoleWrite('ERROR', res.statusText);
                 if (res.status == 429) {
-                    consoleWrite('ERROR', 'Rate limited, waiting 5 seconds');
-                    return delay(5000).then(() => fetchAllHistory(username, tag, region, historyAll, historyRanked));
+                    consoleWrite('ERROR', 'Rate limited, waiting 1 minute (ranked history for ' + username + '#' + tag + ')');
+                    return delay(60000).then(() => fetchAllHistory(username, tag, region, historyAll, historyRanked));
                 }
             }
             return res.json();
@@ -202,7 +200,6 @@ async function fetchRankedHistory(username, tag, region, historyAll, historyRank
                 const date = parseInt(match.date_raw);
                 const elo = parseInt(match.elo);
                 const change = parseInt(match.mmr_change_to_last_game);
-                if (currentRanked[date]) continue;
                 if (historyRanked[date]) {
                     historyRanked[date] = {
                         ...historyRanked[date],
@@ -212,7 +209,7 @@ async function fetchRankedHistory(username, tag, region, historyAll, historyRank
                 } else {
                     // look up the matchid to fill in the missing information
                     await delay(1000);
-                    fetchMatch(match.match_id)
+                    await fetchMatch(match.match_id)
                         .then(data => {
                             if (data.status != 200) return;
                             const matchid = data.data.metadata.matchid;
@@ -245,8 +242,8 @@ async function fetchAllHistory(username, tag, region, historyAll, historyRanked)
             if (res.status != 200) {
                 consoleWrite('ERROR', res.statusText);
                 if (res.status == 429) {
-                    consoleWrite('ERROR', 'Rate limited, waiting 5 seconds');
-                    return delay(5000).then(() => fetchAllHistory(username, tag, region, historyAll, historyRanked));
+                    consoleWrite('ERROR', 'Rate limited, waiting 1 minute (fetch all history for ' + username + '#' + tag + ')');
+                    return delay(60000).then(() => fetchAllHistory(username, tag, region, historyAll, historyRanked));
                 }
                 return res.json();
             }
