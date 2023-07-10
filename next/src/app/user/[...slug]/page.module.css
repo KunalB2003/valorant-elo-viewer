@@ -1,0 +1,38 @@
+
+.card {
+    width: 65vw;
+    height: 65vh;
+    margin: 0 auto;
+    border-radius: 40px;
+    background-color: var(--secondary);
+}
+
+.card > div {
+    outline: 1px solid red;
+    display:flex;
+}
+
+.card_img {
+    border-radius: 0 40px 40px 0;
+    /* max-height: 50vh; */
+    height: 65vh;
+}
+
+.info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.info h1, .info h3 {
+    text-align: center;
+    align-self: center;
+    margin-top: 7.5%;
+    margin-bottom: 5%;
+}
+
+
+.info > span {
+    display: flex;
+    margin: 0 auto;
+}
