@@ -1,3 +1,26 @@
+.gap {
+    height: 120px;
+}
+
+.loader {
+    margin: auto;
+    border: 20px solid #eaf0f6;
+    border-radius: 50%;
+    border-top: 20px solid #ff7a59;
+    width: 200px;
+    aspect-ratio: 1/1;
+    animation: spinner 4s linear infinite;
+}
+
+@keyframes spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
 
 .card {
     width: 65vw;
@@ -7,9 +30,11 @@
     background-color: var(--secondary);
 }
 
-.card > div {
-    outline: 1px solid red;
-    display:flex;
+
+
+.card>div {
+    /* outline: 1px solid red; */
+    display: flex;
 }
 
 .card_img {
@@ -24,15 +49,45 @@
     flex-direction: column;
 }
 
-.info h1, .info h3 {
+.info h1,
+.info h3 {
     text-align: center;
     align-self: center;
     margin-top: 7.5%;
     margin-bottom: 5%;
 }
 
-
-.info > span {
+.info>span {
     display: flex;
     margin: 0 auto;
+}
+
+.recentRanked {
+    display: flex;
+    width: fit-content;
+    margin: auto;
+    gap: 30px;
+}
+
+.loss, .win {
+    width: 7vw;
+    aspect-ratio: 1/1;
+    border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid white;
+    background-color: white
+}
+
+.loss {
+    /* color: red; */
+    border-color: red;
+    background-color: red;
+}
+
+.win {
+    /* color: green; */
+    border-color: green;
+    background-color: green;
 }
