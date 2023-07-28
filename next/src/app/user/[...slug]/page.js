@@ -76,7 +76,6 @@ export default function Page({ params }) {
                 {recentRanked.map(match => <div key={match.match_id} className={(match.mmr_change_to_last_game < 0 ? styles["loss"] : styles["win"])}>{match.mmr_change_to_last_game}</div>)}
               </div>}
             </div>
-            {/* {JSON.stringify(info, null, 2)} */}
             <img className={styles["card_img"]} src={info["card"]["large"]} />
           </div>
         )}
