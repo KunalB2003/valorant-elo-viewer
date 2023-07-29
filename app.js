@@ -1,7 +1,8 @@
-const express = require('express');
-const cors = require('cors');
-const fs = require('fs');
-const process = require('dotenv').config()
+import express from 'express';
+import cors from 'cors';
+import fs from 'fs';
+import dotenv from 'dotenv';
+dotenv.config()
 
 const app = express();
 
@@ -20,12 +21,16 @@ app.listen(PORT, async () => {
     console.log(`Running on http://localhost:${PORT}`);
     console.log("Running track loop every 15 minutes");
     console.log("==============================================\x1b[0m");
+    let [username, id] = ["raison163", "na1"]
+//    fetch(`https://api.henrikdev.xyz/valorant/v1/account/${username}/${id}`, {headers:{"Authorization":process.env.API_KEY}})
+//        .then(res => res.json())
+//        .then(data => console.log(data))
     while (true) {
         // update tracked users
         //  TODO: make new function to check to see if stuff has changed before trying to change it
-        let trackedUsers = await getTrackList();  
+        let trackedUsers = await getTrackList();
         updateTrackedPlayers(trackedUsers).then(() => consoleWrite('UPDATE', "Updated tracked players"));
-        await delay(1000 * 60 * 15);   
+        await delay(1000 * 60 * 15);
     }
 });
 
@@ -54,10 +59,10 @@ app.get('/data/:region/:username/:id', (req, res) => {
     username = username.toLowerCase();
     id = id.toLowerCase();
     region = region.toLowerCase();
-    fetch(`https://api.henrikdev.xyz/valorant/v1/account/${username}/${id}`, headers={"Authorization":process.API_KEY})
+    fetch(`https://api.henrikdev.xyz/valorant/v1/account/${username}/${id}`, {headers:{"Authorization":process.env.API_KEY}})
         .then(res => res.json())
         .then(data => {
-            fetch(`https://api.henrikdev.xyz/valorant/v1/mmr-history/${region}/${username}/${id}`, headers={"Authorization":process.API_KEY})
+            fetch(`https://api.henrikdev.xyz/valorant/v1/mmr-history/${region}/${username}/${id}`, {headers:{"Authorization":process.env.API_KEY}})
                 .then(res => res.json())
                 .then(matches => {
                     data.matches = matches;
@@ -88,7 +93,7 @@ app.post('/trackPlayer', (req, res) => {
     tag = tag.toLowerCase();
 
     // check to see if player exists
-    fetch(`https://api.henrikdev.xyz/valorant/v1/account/${username}/${tag}`, headers={"Authorization":process.API_KEY})
+    fetch(`https://api.henrikdev.xyz/valorant/v1/account/${username}/${tag}`, {headers:{"Authorization":process.env.API_KEY}})
         .then(res => res.json())
         .then(data => {
             if (data.status !== 200) {
@@ -122,7 +127,7 @@ app.post('/trackPlayer', (req, res) => {
 */
 async function updateTrackedPlayers(playerList) {
     createFolder("data/players");
-    if (Object.keys(playerList).length == 0) return;
+    if (Object.keys(playerList).length === 0) return;
     for (const player of playerList) {
         consoleWrite('UPDATE', `Starting update for ${player.username}#${player.tag}`);
         const { username, tag, region } = player;
@@ -169,12 +174,11 @@ async function updateTrackedPlayers(playerList) {
         }
         consoleWrite('UPDATE', `Added ${newAll} new matche(s) for ${username}#${tag} (${newRanked} ranked))`);
     }
-    return;
 
 }
 
 async function fetchMatch(matchid) {
-    return fetch(`https://api.henrikdev.xyz/valorant/v2/match/${matchid}`, headers={"Authorization":process.API_KEY})
+    return fetch(`https://api.henrikdev.xyz/valorant/v2/match/${matchid}`, {headers:{"Authorization":process.env.API_KEY}})
         .then(res => {
             if (res.status != 200) {
                 consoleWrite('ERROR', res.statusText);
@@ -189,11 +193,11 @@ async function fetchMatch(matchid) {
 
 async function fetchRankedHistory(username, tag, region, historyAll, historyRanked) {
     let currentRanked = JSON.parse(fs.readFileSync(`data/players/${username}-${tag}/ranked.json`).toString());
-    return fetch(`https://api.henrikdev.xyz/valorant/v1/mmr-history/${region}/${username}/${tag}`, headers={"Authorization":process.API_KEY})
+    return fetch(`https://api.henrikdev.xyz/valorant/v1/mmr-history/${region}/${username}/${tag}`, {headers:{"Authorization":process.env.API_KEY}})
         .then(res => {
-            if (res.status != 200) {
+            if (res.status !== 200) {
                 consoleWrite('ERROR', res.statusText);
-                if (res.status == 429) {
+                if (res.status === 429) {
                     consoleWrite('ERROR', 'Rate limited, waiting 1 minute (ranked history for ' + username + '#' + tag + ')');
                     return delay(60000).then(() => fetchAllHistory(username, tag, region, historyAll, historyRanked));
                 }
@@ -201,7 +205,7 @@ async function fetchRankedHistory(username, tag, region, historyAll, historyRank
             return res.json();
         })
         .then(async (data) => {
-            if (data.status != 200) return;
+            if (data.status !== 200) return;
             for (const match of data.data) {
                 const date = parseInt(match.date_raw);
                 const elo = parseInt(match.elo);
@@ -218,7 +222,7 @@ async function fetchRankedHistory(username, tag, region, historyAll, historyRank
                     await delay(1000);
                     await fetchMatch(match.match_id)
                         .then(data => {
-                            if (data.status != 200) return;
+                            if (data.status !== 200) return;
                             const matchid = data.data.metadata.matchid;
                             const length = parseInt(data.data.metadata.game_length);
                             const mode = data.data.metadata.mode;
@@ -244,11 +248,11 @@ async function fetchRankedHistory(username, tag, region, historyAll, historyRank
 }
 
 async function fetchAllHistory(username, tag, region, historyAll, historyRanked) {
-    return fetch(`https://api.henrikdev.xyz/valorant/v3/matches/${region}/${username}/${tag}`, headers={"Authorization":process.API_KEY})
+        return fetch(`https://api.henrikdev.xyz/valorant/v3/matches/${region}/${username}/${tag}`, {headers:{"Authorization":process.env.API_KEY}})
         .then(res => {
-            if (res.status != 200) {
+            if (res.status !== 200) {
                 consoleWrite('ERROR', res.statusText);
-                if (res.status == 429) {
+                if (res.status === 429) {
                     consoleWrite('ERROR', 'Rate limited, waiting 1 minute (fetch all history for ' + username + '#' + tag + ')');
                     return delay(60000).then(() => fetchAllHistory(username, tag, region, historyAll, historyRanked));
                 }
@@ -257,7 +261,7 @@ async function fetchAllHistory(username, tag, region, historyAll, historyRanked)
             return res.json();
         })
         .then(data => {
-            if (data.status != 200) {
+            if (data.status !== 200) {
                 return;
             }
             for (const match of data.data) {
