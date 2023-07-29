@@ -66,6 +66,11 @@ app.get('/data/:region/:username/:id', (req, res) => {
         });
 })
 
+app.get('/updateTrackedPlayers', (req, res) => {
+    getTrackList().then(trackedUsers => updateTrackedPlayers(trackedUsers))
+    res.status(200).send()
+})
+
 // post requests
 
 
