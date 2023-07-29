@@ -21,10 +21,6 @@ app.listen(PORT, async () => {
     console.log(`Running on http://localhost:${PORT}`);
     console.log("Running track loop every 15 minutes");
     console.log("==============================================\x1b[0m");
-    let [username, id] = ["raison163", "na1"]
-//    fetch(`https://api.henrikdev.xyz/valorant/v1/account/${username}/${id}`, {headers:{"Authorization":process.env.API_KEY}})
-//        .then(res => res.json())
-//        .then(data => console.log(data))
     while (true) {
         // update tracked users
         //  TODO: make new function to check to see if stuff has changed before trying to change it
