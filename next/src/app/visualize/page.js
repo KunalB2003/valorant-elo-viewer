@@ -27,6 +27,10 @@ ChartJS.register(
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
+function selectLogic(index) {
+  console.log(index + " clicked");
+}
+
 export const options = {
   responsive: true,
   plugins: {
@@ -87,8 +91,11 @@ export default function Page() {
             <ul>
               {players.map((player, index) => {
                 return (
-                  <li key={index}>
-                    {player.username}#{player.tag}
+                  <li key={index} onClick={() => selectLogic(index)}> 
+                    <input type="checkbox" id={index} name={index} /> &nbsp;
+                    <label htmlFor={index}>
+                      {player.username}#{player.tag}
+                    </label>
                   </li>
                 );
               })}
@@ -97,6 +104,16 @@ export default function Page() {
         </div>
         <div className={styles["options"]}>
           click me to toggle an options menu
+          {/* 
+          existing settings:
+            date range
+            elo bounds
+          extras:
+            toggle auto apply
+            select all
+            deselct all
+
+            */}
         </div>
       </div>
 
