@@ -25,7 +25,7 @@ Run `npm install` and `npm run start` to start the back-end first (located in `v
 
 When initializing the api for the first time, you will have to add players to be tracked. This can be done by sending a GET request to the `/data/:region/:username/:id'` endpoint, where you pass the region, username, and id/tag through.
 
-For the API, there are also two environment variabes used - the port, and an optional API key. The `.env` file should look like this:
+For the API, there are also two environment variables used - the port, and an optional API key. The `.env` file should look like this:
 
 ```
 API_KEY=...
@@ -40,7 +40,7 @@ The frontend uses next.js
 
 Navigate to the `next/` directory (`valorant-elo-viewer/next/`) and install dependencies again (`npm install`). 
 
-There is also an evironment variable in use, the url of the API. The `.env` file would be located at the root of the next directory (so `valorant-elo-viewer/next/.env`), and would look like this:
+There is also an environment variable in use, the url of the API. The `.env` file would be located at the root of the next directory (so `valorant-elo-viewer/next/.env`), and would look like this:
 
 ```
 NEXT_PUBLIC_API_URL=...
