@@ -37,7 +37,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/tracked', (req, res) => {
-    consoleWrite('DATA', "Recieved request for user list")
+    consoleWrite('DATA', "Received request for user list")
     getTrackList().then(trackedUsers => res.json(trackedUsers));
 })
 
@@ -172,14 +172,14 @@ async function updateTrackedPlayers(playerList) {
 
 }
 
-async function fetchMatch(matchid) {
-    return fetch(`https://api.henrikdev.xyz/valorant/v2/match/${matchid}`, {headers:{"Authorization":process.env.API_KEY}})
+async function fetchMatch(matchId) {
+    return fetch(`https://api.henrikdev.xyz/valorant/v2/match/${matchId}`, {headers:{"Authorization":process.env.API_KEY}})
         .then(res => {
             if (res.status != 200) {
                 consoleWrite('ERROR', res.statusText);
                 if (res.status == 429) {
-                    consoleWrite('ERROR', 'Rate limited, waiting 1 minute (fetchmatch ' + matchid + ')' );
-                    return delay(60000).then(() => fetchMatch(matchid));
+                    consoleWrite('ERROR', 'Rate limited, waiting 1 minute (fetchMatch ' + matchId + ')' );
+                    return delay(60000).then(() => fetchMatch(matchId));
                 }
             }
             return res.json();
