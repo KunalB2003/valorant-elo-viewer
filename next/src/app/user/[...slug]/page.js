@@ -50,8 +50,8 @@ export default function Page({ params }) {
   // console.log(region, username, tag)
 
   // eventually want to use puuid instead of username and tag
-  useEffect( async () => {
-    await getInfo(region, username, tag, setInfo, setRankedInfo, setRecentRanked)
+  useEffect( () => {
+    getInfo(region, username, tag, setInfo, setRankedInfo, setRecentRanked)
 
   }, []);
 
