@@ -1,10 +1,50 @@
 .player-cards {
     display: flex;
-    flex-flow: column wrap;
+    flex-flow: column nowrap;
     gap: 0.5rem;
-    width: 50vw;
-    /* width: fit-content; */
-    /* padding: 0 5vw; */
+    width: max-content;
     margin: 0 auto;
     list-style: none;
+}
+
+.player-cards li {
+    height: min(10vh, 100%);
+
+}
+.add_player {
+    display: flex;
+    flex-direction: column;
+    margin: 0 5%;
+    row-gap: .2rem;
+}
+
+.add_player button {
+    background-color: white;
+    color: var(--primary);
+    border-radius: .5rem;
+    font-size: 1.5rem;
+}
+
+.add_player button:active {
+    background-color: gray;
+    color: white;
+}
+
+.add_player button:hover {
+    cursor: pointer;
+    background-color: lightslategray;
+}
+
+
+.add_player span {
+    display: flex;
+}
+
+.player_search {
+    padding: 2%;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    background-color: white;
+    color: var(--secondary);
+    border-radius: .5rem;
 }
