@@ -2,6 +2,8 @@
 
 import styles from './page.module.css'
 import { useEffect, useState } from 'react';
+import Link from "next/link";
+
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
@@ -57,6 +59,7 @@ export default function Page({ params }) {
 
   return (
     <div>
+      <Link href="/user" className={styles["back"]}><h2>Go back</h2></Link>
       <div className={styles["gap"]}></div>
       <div className={styles["card"]}>
         {JSON.stringify(info) == '{}' || JSON.stringify(rankedInfo) == '{}' ? (

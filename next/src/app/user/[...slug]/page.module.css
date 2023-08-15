@@ -2,6 +2,17 @@
     height: 120px;
 }
 
+.back {
+    margin-top: 10px;
+    margin-left: 10px;
+    width: fit-content;
+    display: inline-block;
+}
+
+.back:hover {
+    text-decoration: underline;
+}
+
 .loader {
     margin: auto;
     border: 20px solid #eaf0f6;
