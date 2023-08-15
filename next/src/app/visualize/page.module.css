@@ -18,5 +18,16 @@
 
 
 .player-list {
-    margin: 0 auto;
+    margin:  auto;
+}
+.player-list ul {
+    list-style: none;
+}
+
+.player-list ul li * {
+    cursor: pointer;
+}
+
+.options::before {
+    content: "";
 }
