@@ -15,9 +15,9 @@ app.use(express.json())
 
 
 
-app.listen(process.env.PORT, async () => {
+app.listen((process.env.PORT ? process.env.PORT : 3001), async () => {
     console.log("\x1b[33m==============================================");
-    console.log(`Running on http://localhost:${process.env.PORT}`);
+    console.log(`Running on http://localhost:${(process.env.PORT ? process.env.PORT : 3001)}`);
     console.log("Running track loop every 15 minutes");
     console.log("==============================================\x1b[0m");
     while (true) {
