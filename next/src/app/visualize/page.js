@@ -27,9 +27,7 @@ ChartJS.register(
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
-function selectLogic(index) {
-  console.log(index + " clicked");
-}
+
 
 export const options = {
   responsive: true,
@@ -73,6 +71,7 @@ export const data = {
 };
 export default function Page() {
   const [players, setPlayers] = useState(null);
+  const [selected, updateSelected] = useState([])
   useEffect(() => {
     fetcher(`${process.env.NEXT_PUBLIC_API_URL}/tracked`).then((res) => {
       setPlayers([...res]);
@@ -80,6 +79,17 @@ export default function Page() {
   }, []);
   // let options = {}
   // let data = {}
+  function selectLogic(player) {
+    console.log(player.username + " clicked");
+    console.log(player)
+    if (selected.includes(player)) {
+      console.log("already selected, removing")
+      updateSelected(selected.filter((item) => item !== player))
+    } else {
+      console.log("not selected, adding")
+      updateSelected([...selected, player])
+    }
+  }
 
   return (
     <div className={styles["page"]}>
@@ -91,8 +101,8 @@ export default function Page() {
             <ul>
               {players.map((player, index) => {
                 return (
-                  <li key={index} onClick={() => selectLogic(index)}> 
-                    <input type="checkbox" id={index} name={index} /> &nbsp;
+                  <li key={index} > 
+                    <input type="checkbox" id={index} name={index} onClick={() => selectLogic(player)}/> &nbsp;
                     <label htmlFor={index}>
                       {player.username}#{player.tag}
                     </label>
@@ -102,8 +112,18 @@ export default function Page() {
             </ul>
           )}
         </div>
+        <div>
+          {selected.length > 0 ? (selected.map(player => {
+            return (<div>{player.username}#{player.tag}</div>)
+          })) : ("no players selected")}
+        </div>
         <div className={styles["options"]}>
           click me to toggle an options menu
+          <ul>
+            <li>date range</li>
+            <li>elo bounds</li>
+            <li>yeah</li>
+          </ul>
           {/* 
           existing settings:
             date range
