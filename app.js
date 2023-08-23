@@ -20,13 +20,13 @@ app.listen((process.env.PORT ? process.env.PORT : 3001), async () => {
     console.log(`Running on http://localhost:${(process.env.PORT ? process.env.PORT : 3001)}`);
     console.log("Running track loop every 15 minutes");
     console.log("==============================================\x1b[0m");
-    while (true) {
-        // update tracked users
-        //  TODO: make new function to check to see if stuff has changed before trying to change it
-        let trackedUsers = await getTrackList();
-        updateTrackedPlayers(trackedUsers).then(() => consoleWrite('UPDATE', "Updated tracked players"));
-        await delay(1000 * 60 * 15);
-    }
+    // while (true) {
+    //     // update tracked users
+    //     //  TODO: make new function to check to see if stuff has changed before trying to change it
+    //     let trackedUsers = await getTrackList();
+    //     updateTrackedPlayers(trackedUsers).then(() => consoleWrite('UPDATE', "Updated tracked players"));
+    //     await delay(1000 * 60 * 15);
+    // }
 });
 
 // get requests
@@ -44,7 +44,7 @@ app.get('/tracked', (req, res) => {
 app.get('/data/:region/:username/:id', (req, res) => {
     let { region, username, id } = req.params;
     if (!region || !username || !id) {
-        res.status(400).send("Missing region, username, or id");
+        res.status(400).send({message: "Missing region, username, or id"});
         return;
     }
 
@@ -79,21 +79,22 @@ app.get('/updateTrackedPlayers', (req, res) => {
 app.post('/trackPlayer', (req, res) => {
     consoleWrite('UPDATE', "Received request to track player");
     let { username, tag, region } = req.body;
+    console.log(req.body)
     if (!username || !tag || !region) {
         consoleWrite('ERROR', "Missing username, tag, or region");
-        res.status(400).send("Missing username, tag, or region");
+        res.status(400).send({status: 400, message: "Missing username, tag, or region"});
         return;
     }
     username = username.toLowerCase();
     tag = tag.toLowerCase();
-
+    console.log(username, tag, region)
     // check to see if player exists
     fetch(`https://api.henrikdev.xyz/valorant/v1/account/${username}/${tag}`, {headers:{"Authorization":process.env.API_KEY}})
         .then(res => res.json())
         .then(data => {
             if (data.status !== 200) {
                 consoleWrite('ERROR', data.message);
-                res.status(data.status).send(data.message);
+                res.status(data.status).send({status: data.status, message: data.message});
                 return;
             }
             // check if the player is already being tracked
@@ -101,7 +102,7 @@ app.post('/trackPlayer', (req, res) => {
                 for (const player of trackList) {
                     if (player.puuid === data.data.puuid) {
                         consoleWrite('ERROR', "Player is already being tracked");
-                        res.status(400).send("Player is already being tracked");
+                        res.status(400).send({status: 400, message: "Player is already being tracked"});
                         return;
                     }
                 }
@@ -110,7 +111,7 @@ app.post('/trackPlayer', (req, res) => {
                 fs.writeFile("data/track_list.json", JSON.stringify(trackList), (err) => {if (err) consoleWrite('ERROR', err)});
                 consoleWrite('UPDATE', `Added ${username}#${tag} to track list`);
                 updateTrackedPlayers([player])
-                res.status(200).send("Added player to track list");
+                res.status(200).send({status: 200, message: "Added player to track list"});
             })
 
         })
