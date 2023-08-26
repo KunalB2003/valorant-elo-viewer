@@ -20,13 +20,13 @@ app.listen((process.env.PORT ? process.env.PORT : 3001), async () => {
     console.log(`Running on http://localhost:${(process.env.PORT ? process.env.PORT : 3001)}`);
     console.log("Running track loop every 15 minutes");
     console.log("==============================================\x1b[0m");
-    // while (true) {
-    //     // update tracked users
-    //     //  TODO: make new function to check to see if stuff has changed before trying to change it
-    //     let trackedUsers = await getTrackList();
-    //     updateTrackedPlayers(trackedUsers).then(() => consoleWrite('UPDATE', "Updated tracked players"));
-    //     await delay(1000 * 60 * 15);
-    // }
+    while (true) {
+        // update tracked users
+        //  TODO: make new function to check to see if stuff has changed before trying to change it
+        let trackedUsers = await getTrackList();
+        updateTrackedPlayers(trackedUsers).then(() => consoleWrite('UPDATE', "Updated tracked players"));
+        await delay(1000 * 60 * 15);
+    }
 });
 
 // get requests
